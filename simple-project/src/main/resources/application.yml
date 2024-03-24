@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: simple-project
+
+  datasource:
+    db1:
+      jdbcUrl: ${LOCAL_JDBC_URL}
+      username: root
+      password: admin
+      driver-class-name: ${MYSQL_DRIVER}
+    db2:
+      jdbcUrl: ${LOCAL_JDBC_URL}
+      username: root
+      password: admin
+      driver-class-name: ${MYSQL_DRIVER}
+      hikari:
+        connection-timeout: 5000   # Tempo máximo de 5 segundos que o Hikari vai esperar para obter uma conexão do pool antes de lançar uma exceção de timeout
+        idle-timeout: 20000        # Tempo que a conexão pode ficar ociosa 20 segundos
+        max-lifetime: 40000        # Tempo máximo de vida de uma conexão independente de quantas vezes foi usada 40 segundos
+        maximum-pool-size: 3       # Número máximo de conexões simultâneas no pool
+
+db1:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        generate_statistics: true
+
+db2:
+  jpa:
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.MariaDBDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        generate_statistics: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
