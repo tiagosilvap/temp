@@ -1,6 +1,6 @@
 package com.hotmart.api.subscription.treta.service;
 
-import com.hotmart.api.subscription.infraestructure.db2.entity.OfferMkt;
+import com.hotmart.api.subscription.infraestructure.db2.entity.mkt.OfferMkt;
 import com.hotmart.api.subscription.infraestructure.db2.repository.InstallmentProductMktRepository;
 import com.hotmart.api.subscription.infraestructure.db2.repository.OfferMktRepository;
 import com.hotmart.api.subscription.treta.filemanager.SubscriptionDataCsvReader;

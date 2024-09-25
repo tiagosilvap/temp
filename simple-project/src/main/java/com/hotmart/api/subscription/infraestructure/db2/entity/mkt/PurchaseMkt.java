@@ -1,4 +1,4 @@
-package com.hotmart.api.subscription.infraestructure.db2.entity;
+package com.hotmart.api.subscription.infraestructure.db2.entity.mkt;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,7 +11,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity

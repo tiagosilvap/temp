@@ -1,5 +1,6 @@
-package com.hotmart.api.subscription.infraestructure.db2.entity;
+package com.hotmart.api.subscription.infraestructure.db2.entity.hp;
 
+import com.hotmart.api.subscription.infraestructure.db2.entity.mkt.OfferMkt;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,15 +13,14 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "parcelamento_produto")
+@Table(name = "transaction")
 @Data
-public class InstallmentProductMkt {
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "oferta")
-    private OfferMkt offer;
+    @Column(name = "hotpay_reference")
+    private String hotpayReference;
 }
