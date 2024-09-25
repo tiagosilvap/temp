@@ -62,7 +62,9 @@ public class S3Service {
     public List<TransactionResponse> downloadFile(List<String> transactions) {
         var response = new ArrayList<TransactionResponse>();
         if(CollectionUtils.isNotEmpty(transactions)) {
-            transactions.forEach(t -> response.add(new TransactionResponse(t, downloadFile(t))));
+            transactions.forEach(t ->
+                    response.add(new TransactionResponse(t, downloadFile(t)))
+            );
         }
         return response;
     }
