@@ -1,9 +1,11 @@
 package com.hotmart.api.subscription.checkouttokens3.service;
 
 import com.hotmart.api.subscription.checkouttokens3.feign.TokenResponse;
+import com.hotmart.api.subscription.checkouttokens3.feign.TransactionResponse;
 import com.hotmart.api.subscription.checkouttokens3.utils.TokenUtils;
 import com.hotmart.api.subscription.infraestructure.db2.entity.PurchaseMkt;
 import com.hotmart.api.subscription.infraestructure.db2.repository.PurchaseMktRepository;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseInputStream;
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 public class S3Service {
@@ -55,7 +58,13 @@ public class S3Service {
         }
     }
     
-    // Baixar um arquivo do bucket S3
+    public TransactionResponse downloadFile(List<String> transactions) {
+        if(CollectionUtils.isNotEmpty(transactions)) {
+            transactions.forEach(t -> new TransactionResponse(t, downloadFile(t)));
+        }
+        return null;
+    }
+    
     public String downloadFile(String transaction) {
         var key = getTokenByTransaction(transaction);
         if(key != null) {
