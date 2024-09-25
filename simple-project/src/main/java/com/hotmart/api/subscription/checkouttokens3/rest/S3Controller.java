@@ -32,7 +32,7 @@ public class S3Controller {
     }
     
     @GetMapping("/download-file")
-    public ResponseEntity<TransactionResponse> getTokenByTransaction(
+    public ResponseEntity<List<TransactionResponse>> getTokenByTransaction(
             @RequestBody List<String> transaction) {
         return ResponseEntity.ok(s3Service.downloadFile(transaction));
     }

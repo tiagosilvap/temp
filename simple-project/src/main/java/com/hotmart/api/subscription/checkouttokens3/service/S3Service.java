@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -58,11 +59,12 @@ public class S3Service {
         }
     }
     
-    public TransactionResponse downloadFile(List<String> transactions) {
+    public List<TransactionResponse> downloadFile(List<String> transactions) {
+        var response = new ArrayList<TransactionResponse>();
         if(CollectionUtils.isNotEmpty(transactions)) {
-            transactions.forEach(t -> new TransactionResponse(t, downloadFile(t)));
+            transactions.forEach(t -> response.add(new TransactionResponse(t, downloadFile(t))));
         }
-        return null;
+        return response;
     }
     
     public String downloadFile(String transaction) {
