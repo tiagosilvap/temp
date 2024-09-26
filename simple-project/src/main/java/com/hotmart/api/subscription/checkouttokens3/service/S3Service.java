@@ -23,12 +23,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class S3Service {
     
     public static final String CHECKOUT_4_TOKEN_PREFIX = "Ckt4TokenV1:";
-    public static final String DOWNLOAD_FILE_PATH = "/Users/tiago.pereira/Desktop/temp/checkout_token";
+    public static final String DOWNLOAD_FILE_PATH = "/Users/tiago.pereira/Desktop/csv/checkout_token";
     public static final String BUCKET_NAME = "checkout-token-fallback";
     
     private final AstroboxService astroboxService;
@@ -62,20 +63,25 @@ public class S3Service {
     public List<TransactionResponse> downloadFile(List<String> transactions) {
         var response = new ArrayList<TransactionResponse>();
         if(CollectionUtils.isNotEmpty(transactions)) {
+            AtomicInteger index = new AtomicInteger(0);
             transactions.forEach(t ->
-                    response.add(new TransactionResponse(t, downloadFile(t)))
+                    response.add(new TransactionResponse(
+                            t, downloadFile(t, index.getAndIncrement()))
+                    )
             );
         }
         return response;
     }
     
-    public String downloadFile(String transaction) {
+    public String downloadFile(String transaction, int count) {
         var key = getTokenByTransaction(transaction);
         if(key != null) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket(BUCKET_NAME)
                     .key(key.getToken())
                     .build();
+            
+            downloadObject(getObjectRequest, count);
             
             try (ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(getObjectRequest)) {
                 String content = readStream(responseInputStream);
@@ -113,8 +119,8 @@ public class S3Service {
         return content.toString();
     }
     
-    private void downloadObject(GetObjectRequest getObjectRequest) {
-        s3Client.getObject(getObjectRequest, Paths.get(DOWNLOAD_FILE_PATH));
+    private void downloadObject(GetObjectRequest getObjectRequest, int count) {
+        s3Client.getObject(getObjectRequest, Paths.get(DOWNLOAD_FILE_PATH + "_" + count));
     }
     
     public boolean isCheckout4Token(String checkoutTokenKey) {

@@ -28,7 +28,7 @@ public class S3Controller {
     
     @GetMapping("/download-file/{transaction}")
     public ResponseEntity<String> downloadFile(@PathVariable String transaction) {
-        return ResponseEntity.ok(s3Service.downloadFile(transaction));
+        return ResponseEntity.ok(s3Service.downloadFile(transaction, 1));
     }
     
     @GetMapping("/download-file")
