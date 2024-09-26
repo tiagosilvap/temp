@@ -2,6 +2,9 @@ spring:
   application:
     name: simple-project
 
+security:
+  token: ${APP_TOKEN}
+
   datasource:
     db1:
       jdbcUrl: ${LOCAL_JDBC_URL}

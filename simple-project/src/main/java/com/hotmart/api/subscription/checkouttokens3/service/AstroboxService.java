@@ -5,6 +5,7 @@ import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxClient;
 import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxCheckoutLoadPayloadRequest;
 import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxResponse;
 import com.hotmart.api.subscription.checkouttokens3.feign.TokenResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.List;
 @Service
 public class AstroboxService {
     
-    public static final String BEARER_TOKEN = "Bearer token";
+    @Value("${security.token}")
+    public String BEARER_TOKEN;
     private final AstroboxClient astroboxClient;
     
     public AstroboxService(AstroboxClient astroboxClient) {
@@ -29,7 +31,7 @@ public class AstroboxService {
         
         return astroboxClient.getCheckoutTokenByTransaction(
                 "api-hotpay-order-checker",
-                BEARER_TOKEN,
+                "Bearer " + BEARER_TOKEN,
                 request
         );
     }
@@ -46,7 +48,7 @@ public class AstroboxService {
         
         return astroboxClient.getCheckoutLoadExample(
                 "api-hotpay-order-checker",
-                BEARER_TOKEN,
+                "Bearer " + BEARER_TOKEN,
                 request
         );
     }
