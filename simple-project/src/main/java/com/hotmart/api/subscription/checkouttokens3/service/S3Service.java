@@ -63,17 +63,14 @@ public class S3Service {
     public List<TransactionResponse> downloadFile(List<String> transactions) {
         var response = new ArrayList<TransactionResponse>();
         if(CollectionUtils.isNotEmpty(transactions)) {
-            AtomicInteger index = new AtomicInteger(0);
             transactions.forEach(t ->
-                    response.add(new TransactionResponse(
-                            t, downloadFile(t, index.getAndIncrement()))
-                    )
+                    response.add(new TransactionResponse(t, downloadFile(t)))
             );
         }
         return response;
     }
     
-    public String downloadFile(String transaction, int count) {
+    public String downloadFile(String transaction) {
         var key = getTokenByTransaction(transaction);
         if(key != null) {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
@@ -81,7 +78,7 @@ public class S3Service {
                     .key(key.getToken())
                     .build();
             
-            downloadObject(getObjectRequest, count);
+            downloadObject(getObjectRequest, transaction);
             
             try (ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(getObjectRequest)) {
                 String content = readStream(responseInputStream);
@@ -119,7 +116,7 @@ public class S3Service {
         return content.toString();
     }
     
-    private void downloadObject(GetObjectRequest getObjectRequest, int count) {
+    private void downloadObject(GetObjectRequest getObjectRequest, String count) {
         s3Client.getObject(getObjectRequest, Paths.get(DOWNLOAD_FILE_PATH + "_" + count));
     }
     
