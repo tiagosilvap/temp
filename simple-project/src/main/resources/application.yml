@@ -2,9 +2,6 @@ spring:
   application:
     name: simple-project
 
-security:
-  token: ${APP_TOKEN}
-
   datasource:
     db1:
       jdbcUrl: ${LOCAL_JDBC_URL}
@@ -50,3 +47,6 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+security:
+  token: ${APP_TOKEN}
