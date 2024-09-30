@@ -31,6 +31,8 @@ public class TransactionVO {
     public String getPaymentType() {
         if(PaymentType.PAYPAL_INTERNACIONAL.getCode().equals(paymentType)) {
             return PaymentType.PAYPAL.getCode();
+        } else if(PaymentType.WALLET.getCode().equals(paymentType) && installments !=null && installments > 1) {
+            return PaymentType.CREDIT_CARD.getCode();
         }
         return paymentType;
     }
