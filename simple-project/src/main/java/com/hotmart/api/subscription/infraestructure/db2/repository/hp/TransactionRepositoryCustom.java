@@ -23,12 +23,14 @@ public class TransactionRepositoryCustom {
                     "    t.installments as installments, " +
                     "    sp.value as subscriptionValue, " +
                     "    t.value as transactionValue, " +
-                    "    sp.id as paymentId " +
+                    "    sp.id as paymentId, " +
+                    "    ti.price as transactionItemValue " +
                     "from transaction t " +
                     "join transaction_item ti on t.id = ti.transaction " +
                     "join subscription s on ti.subscription = s.id " +
                     "join subscription_payment sp on sp.id = (select min(sp.id) from subscription_payment sp where sp.subscription = s.id) " +
-                    "where t.hotpay_reference = :hotpayReference ";
+                    "where t.hotpay_reference = :hotpayReference " +
+                    "and if(t.type = 'SHOPPING_CART', ti.price <> sp.value, t.value <> sp.value) ";
     
     public TransactionVO getDetailsByTransaction(String hotpayReference) {
         
@@ -43,7 +45,16 @@ public class TransactionRepositoryCustom {
             BigDecimal subscriptionValue = result[3] != null ? new BigDecimal(result[3].toString()) : null;
             BigDecimal transactionValue = result[4] != null ? new BigDecimal(result[4].toString()) : null;
             Long paymentId = result[5] != null ? Long.valueOf(result[5].toString()) : null;
-            return new TransactionVO(offerCode, paymentType, installments, subscriptionValue, transactionValue,paymentId);
+            BigDecimal transactionItemValue = result[6] != null ? new BigDecimal(result[6].toString()) : null;
+            return new TransactionVO(
+                    offerCode,
+                    paymentType,
+                    installments,
+                    subscriptionValue,
+                    transactionValue,
+                    paymentId,
+                    transactionItemValue
+            );
         } catch (NoResultException ex) {
             return null;
         }

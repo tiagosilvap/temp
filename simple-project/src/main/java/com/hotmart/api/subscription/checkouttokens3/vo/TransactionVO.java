@@ -13,19 +13,22 @@ public class TransactionVO {
     private BigDecimal subscriptionValue;
     private BigDecimal transactionValue;
     private Long paymentId;
+    private BigDecimal transactionItemValue;
     
     public TransactionVO(String offerCode,
                          String paymentType,
                          Integer installments,
                          BigDecimal subscriptionValue,
                          BigDecimal transactionValue,
-                         Long paymentId) {
+                         Long paymentId,
+                         BigDecimal transactionItemValue) {
         this.offerCode = offerCode;
         this.paymentType = paymentType;
         this.installments = installments;
         this.subscriptionValue = subscriptionValue;
         this.transactionValue = transactionValue;
         this.paymentId = paymentId;
+        this.transactionItemValue = transactionItemValue;
     }
     
     public String getPaymentType() {
