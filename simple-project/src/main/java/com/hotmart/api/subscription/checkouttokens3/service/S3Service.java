@@ -92,7 +92,7 @@ public class S3Service {
                 var details = transactionRepositoryCustom.getDetailsByTransaction(t);
                 BigDecimal loadValue = jsonReader.readerToken(checkoutToken, details);
                 
-                if(loadValue != null && isWithinTolerance(loadValue, details.getTransactionValue(), BigDecimal.valueOf(0.1))) {
+                if(loadValue != null && isWithinTolerance(loadValue, details.getTransactionValue(), BigDecimal.valueOf(0.9))) {
                     hotpayClient.updateValueSubscriptionPayment(
                             BEARER_TOKEN, details.getPaymentId(), details.getTransactionValue()
                     );
