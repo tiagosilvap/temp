@@ -41,8 +41,8 @@ public class AstroboxService {
     
     public AstroboxResponse getCheckoutLoadExample() {
         var details = new TransactionVO();
-        details.setCreationDate(LocalDateTime.of(2024, 7, 10, 0, 0));
-        return getCheckoutLoadExample("HP1973886884", details);
+        details.setCreationDate(LocalDateTime.of(2024, 7, 17, 0, 0));
+        return getCheckoutLoadExample("HP0515620236", details);
     }
     
     public AstroboxResponse getCheckoutLoadExample(String transaction, TransactionVO details) {
