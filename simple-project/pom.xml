@@ -89,6 +89,30 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.15</version> <!-- Verifique se há uma versão mais recente se necessário -->
 		</dependency>
+
+		<dependency>
+			<groupId>com.hotmart.integration</groupId>
+			<artifactId>hot-integration-hotpay</artifactId>
+			<version>4.0.67</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>com.hotmart.payments</artifactId>
+					<groupId>exchange-rate-api</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hot-marketplace-vo</artifactId>
+					<groupId>com.hotmart.marketplace</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>risk-commons</artifactId>
+					<groupId>com.hotmart.payments.risk</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hotbank-vo</artifactId>
+					<groupId>com.hotmart.payment</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

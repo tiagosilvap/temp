@@ -1,27 +1,26 @@
 package com.hotmart.api.subscription.checkouttokens3.service;
 
+import com.hotmart.api.subscription.checkouttokens3.feign.HotpayClient;
 import com.hotmart.api.subscription.checkouttokens3.feign.TokenResponse;
 import com.hotmart.api.subscription.checkouttokens3.feign.TransactionResponse;
 import com.hotmart.api.subscription.checkouttokens3.utils.JsonReader;
 import com.hotmart.api.subscription.checkouttokens3.utils.TokenUtils;
-import com.hotmart.api.subscription.checkouttokens3.vo.TransactionVO;
 import com.hotmart.api.subscription.infraestructure.db2.entity.mkt.PurchaseMkt;
 import com.hotmart.api.subscription.infraestructure.db2.repository.PurchaseMktRepository;
-import com.hotmart.api.subscription.infraestructure.db2.repository.hp.TransactionRepository;
 import com.hotmart.api.subscription.infraestructure.db2.repository.hp.TransactionRepositoryCustom;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Object;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -33,6 +32,8 @@ import java.util.List;
 @Service
 public class S3Service {
     
+    @Value("${security.token}")
+    public String BEARER_TOKEN;
     public static final String CHECKOUT_4_TOKEN_PREFIX = "Ckt4TokenV1:";
     public static final String DOWNLOAD_FILE_PATH = "/Users/tiago.pereira/Desktop/csv/checkout_token";
     public static final String BUCKET_NAME = "checkout-token-fallback";
@@ -42,20 +43,23 @@ public class S3Service {
     private final TokenUtils tokenUtils;
     private final PurchaseMktRepository purchaseMktRepository;
     private final JsonReader jsonReader;
-    private final TransactionRepository transactionRepository;
     private final TransactionRepositoryCustom transactionRepositoryCustom;
+    private final HotpayClient hotpayClient;
     
     public S3Service(AstroboxService astroboxService,
                      S3Client s3Client,
                      TokenUtils tokenUtils,
-                     PurchaseMktRepository purchaseMktRepository, JsonReader jsonReader, TransactionRepository transactionRepository, TransactionRepositoryCustom transactionRepositoryCustom) {
+                     PurchaseMktRepository purchaseMktRepository,
+                     JsonReader jsonReader,
+                     TransactionRepositoryCustom transactionRepositoryCustom,
+                     HotpayClient hotpayClient) {
         this.astroboxService = astroboxService;
         this.s3Client = s3Client;
         this.tokenUtils = tokenUtils;
         this.purchaseMktRepository = purchaseMktRepository;
         this.jsonReader = jsonReader;
-        this.transactionRepository = transactionRepository;
         this.transactionRepositoryCustom = transactionRepositoryCustom;
+        this.hotpayClient = hotpayClient;
     }
     
     // Listar arquivos em um bucket
@@ -82,7 +86,6 @@ public class S3Service {
     }
     
     public void compareTransactionValueWithLoad(List<String> transactions) {
-        var response = new ArrayList<TransactionResponse>();
         if(CollectionUtils.isNotEmpty(transactions)) {
             transactions.forEach(t -> {
                 String checkoutToken = downloadFile(t);
@@ -90,10 +93,13 @@ public class S3Service {
                 BigDecimal loadValue = jsonReader.readerToken(checkoutToken, details);
                 
                 if(loadValue != null && loadValue.compareTo(details.getTransactionValue()) == 0) {
-                    //chamar hotpay
+                    hotpayClient.updateValueSubscriptionPayment(
+                            BEARER_TOKEN, details.getPaymentId(), details.getTransactionValue()
+                    );
                 }
             });
         }
+        System.out.println("END");
     }
     
     public String downloadFile(String transaction) {
