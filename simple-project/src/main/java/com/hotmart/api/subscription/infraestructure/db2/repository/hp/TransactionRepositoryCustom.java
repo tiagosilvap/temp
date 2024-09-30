@@ -22,9 +22,8 @@ public class TransactionRepositoryCustom {
                     "    t.payment_type as paymentType, " +
                     "    t.installments as installments, " +
                     "    sp.value as subscriptionValue, " +
-                    "    t.value as transactionValue, " +
-                    "    sp.id as paymentId, " +
-                    "    ti.price as transactionItemValue " +
+                    "    if(t.type = 'SHOPPING_CART', ti.price, t.value) as transactionValue, " +
+                    "    sp.id as paymentId " +
                     "from transaction t " +
                     "join transaction_item ti on t.id = ti.transaction " +
                     "join subscription s on ti.subscription = s.id " +
@@ -45,15 +44,13 @@ public class TransactionRepositoryCustom {
             BigDecimal subscriptionValue = result[3] != null ? new BigDecimal(result[3].toString()) : null;
             BigDecimal transactionValue = result[4] != null ? new BigDecimal(result[4].toString()) : null;
             Long paymentId = result[5] != null ? Long.valueOf(result[5].toString()) : null;
-            BigDecimal transactionItemValue = result[6] != null ? new BigDecimal(result[6].toString()) : null;
             return new TransactionVO(
                     offerCode,
                     paymentType,
                     installments,
                     subscriptionValue,
                     transactionValue,
-                    paymentId,
-                    transactionItemValue
+                    paymentId
             );
         } catch (NoResultException ex) {
             return null;
