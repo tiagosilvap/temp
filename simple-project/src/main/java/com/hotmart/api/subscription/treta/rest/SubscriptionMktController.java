@@ -1,18 +1,14 @@
 package com.hotmart.api.subscription.treta.rest;
 
-import com.hotmart.api.subscription.infraestructure.db2.entity.SubscriptionMkt;
-import com.hotmart.api.subscription.treta.service.ProductInstallmentService;
+import com.hotmart.api.subscription.infraestructure.db2.entity.mkt.SubscriptionMkt;
 import com.hotmart.api.subscription.treta.service.SubscriptionMktService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 @RestController

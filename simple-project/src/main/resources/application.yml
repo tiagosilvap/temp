@@ -9,10 +9,10 @@ spring:
       password: admin
       driver-class-name: ${MYSQL_DRIVER}
     db2:
-      jdbcUrl: ${LOCAL_JDBC_URL}
-      username: root
-      password: admin
-      driver-class-name: ${MYSQL_DRIVER}
+      jdbcUrl: ${HP_JDBC_URL}
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: ${MARIADB_DRIVER}
       hikari:
         connection-timeout: 5000   # Tempo máximo de 5 segundos que o Hikari vai esperar para obter uma conexão do pool antes de lançar uma exceção de timeout
         idle-timeout: 20000        # Tempo que a conexão pode ficar ociosa 20 segundos

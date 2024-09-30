@@ -1,6 +1,6 @@
 package com.hotmart.api.subscription.treta.service;
 
-import com.hotmart.api.subscription.infraestructure.db2.entity.SubscriptionMkt;
+import com.hotmart.api.subscription.infraestructure.db2.entity.mkt.SubscriptionMkt;
 import com.hotmart.api.subscription.infraestructure.db2.repository.SubscriptionMktRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

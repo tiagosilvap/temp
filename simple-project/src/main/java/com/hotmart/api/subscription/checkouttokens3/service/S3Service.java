@@ -2,9 +2,13 @@ package com.hotmart.api.subscription.checkouttokens3.service;
 
 import com.hotmart.api.subscription.checkouttokens3.feign.TokenResponse;
 import com.hotmart.api.subscription.checkouttokens3.feign.TransactionResponse;
+import com.hotmart.api.subscription.checkouttokens3.utils.JsonReader;
 import com.hotmart.api.subscription.checkouttokens3.utils.TokenUtils;
-import com.hotmart.api.subscription.infraestructure.db2.entity.PurchaseMkt;
+import com.hotmart.api.subscription.checkouttokens3.vo.TransactionVO;
+import com.hotmart.api.subscription.infraestructure.db2.entity.mkt.PurchaseMkt;
 import com.hotmart.api.subscription.infraestructure.db2.repository.PurchaseMktRepository;
+import com.hotmart.api.subscription.infraestructure.db2.repository.hp.TransactionRepository;
+import com.hotmart.api.subscription.infraestructure.db2.repository.hp.TransactionRepositoryCustom;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -17,13 +21,14 @@ import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class S3Service {
@@ -36,15 +41,21 @@ public class S3Service {
     private final S3Client s3Client;
     private final TokenUtils tokenUtils;
     private final PurchaseMktRepository purchaseMktRepository;
+    private final JsonReader jsonReader;
+    private final TransactionRepository transactionRepository;
+    private final TransactionRepositoryCustom transactionRepositoryCustom;
     
     public S3Service(AstroboxService astroboxService,
                      S3Client s3Client,
                      TokenUtils tokenUtils,
-                     PurchaseMktRepository purchaseMktRepository) {
+                     PurchaseMktRepository purchaseMktRepository, JsonReader jsonReader, TransactionRepository transactionRepository, TransactionRepositoryCustom transactionRepositoryCustom) {
         this.astroboxService = astroboxService;
         this.s3Client = s3Client;
         this.tokenUtils = tokenUtils;
         this.purchaseMktRepository = purchaseMktRepository;
+        this.jsonReader = jsonReader;
+        this.transactionRepository = transactionRepository;
+        this.transactionRepositoryCustom = transactionRepositoryCustom;
     }
     
     // Listar arquivos em um bucket
@@ -70,6 +81,21 @@ public class S3Service {
         return response;
     }
     
+    public void compareTransactionValueWithLoad(List<String> transactions) {
+        var response = new ArrayList<TransactionResponse>();
+        if(CollectionUtils.isNotEmpty(transactions)) {
+            transactions.forEach(t -> {
+                String checkoutToken = downloadFile(t);
+                var details = transactionRepositoryCustom.getDetailsByTransaction(t);
+                BigDecimal loadValue = jsonReader.readerToken(checkoutToken, details);
+                
+                if(loadValue != null && loadValue.compareTo(details.getTransactionValue()) == 0) {
+                    //chamar hotpay
+                }
+            });
+        }
+    }
+    
     public String downloadFile(String transaction) {
         var key = getTokenByTransaction(transaction);
         if(key != null) {
@@ -78,7 +104,7 @@ public class S3Service {
                     .key(key.getToken())
                     .build();
             
-            downloadObject(getObjectRequest, transaction);
+//            downloadObject(getObjectRequest, transaction);
             
             try (ResponseInputStream<GetObjectResponse> responseInputStream = s3Client.getObject(getObjectRequest)) {
                 String content = readStream(responseInputStream);

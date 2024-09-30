@@ -1,4 +1,4 @@
-package com.hotmart.api.subscription.infraestructure.db2.entity;
+package com.hotmart.api.subscription.infraestructure.db2.entity.mkt;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

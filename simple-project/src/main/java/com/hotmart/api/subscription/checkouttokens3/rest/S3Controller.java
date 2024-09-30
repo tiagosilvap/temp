@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -35,5 +36,12 @@ public class S3Controller {
     public ResponseEntity<List<TransactionResponse>> getTokenByTransaction(
             @RequestBody List<String> transaction) {
         return ResponseEntity.ok(s3Service.downloadFile(transaction));
+    }
+    
+    @GetMapping("/compareTransactionValueWithLoad")
+    public ResponseEntity compareTransactionValueWithLoad(
+            @RequestBody List<String> transaction) {
+        s3Service.compareTransactionValueWithLoad(transaction);
+        return ResponseEntity.ok().build();
     }
 }
