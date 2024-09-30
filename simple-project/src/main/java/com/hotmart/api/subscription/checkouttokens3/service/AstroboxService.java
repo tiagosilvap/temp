@@ -5,7 +5,9 @@ import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxClient;
 import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxCheckoutLoadPayloadRequest;
 import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxResponse;
 import com.hotmart.api.subscription.checkouttokens3.feign.TokenResponse;
+import com.hotmart.api.subscription.checkouttokens3.utils.TokenUtils;
 import com.hotmart.api.subscription.checkouttokens3.vo.TransactionVO;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -48,8 +50,8 @@ public class AstroboxService {
     public AstroboxResponse getCheckoutLoadExample(String transaction, TransactionVO details) {
         AstroboxCheckoutLoadPayloadRequest.Parameters parameters = new AstroboxCheckoutLoadPayloadRequest.Parameters();
         
-        var beginDay = details.getCreationDate().plusDays(1);
-        var endDay = details.getCreationDate().minusDays(1);
+        var beginDay = details.getCreationDate().minusDays(1);
+        var endDay = details.getCreationDate().plusDays(1);
         
         parameters.setBeginDay(beginDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         parameters.setEndDay(endDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
@@ -59,10 +61,14 @@ public class AstroboxService {
         request.setQuery("38c8a557-4fee-4cc4-8b80-5aa7d7261c2f");
         request.setParameters(parameters);
         
-        return astroboxClient.getCheckoutLoadExample(
+        var checkoutLoad = astroboxClient.getCheckoutLoadExample(
                 "api-hotpay-order-checker",
                 "Bearer " + BEARER_TOKEN,
                 request
         );
+        
+        var token = Base64.decodeBase64(checkoutLoad.getPayload().getBytes());
+        checkoutLoad.setPayload(new String(token));
+        return checkoutLoad;
     }
 }

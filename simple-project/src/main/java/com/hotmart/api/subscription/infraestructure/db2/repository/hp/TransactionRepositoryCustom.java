@@ -48,7 +48,7 @@ public class TransactionRepositoryCustom {
             BigDecimal transactionValue = result[4] != null ? new BigDecimal(result[4].toString()) : null;
             Long paymentId = result[5] != null ? Long.valueOf(result[5].toString()) : null;
             LocalDateTime creationDate = result[6] != null
-                    ? LocalDateTime.parse(result[6].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    ? LocalDateTime.parse(result[6].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"))
                     : null;
             return new TransactionVO(
                     offerCode,

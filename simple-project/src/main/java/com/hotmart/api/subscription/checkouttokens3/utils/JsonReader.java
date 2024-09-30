@@ -18,12 +18,15 @@ public class JsonReader {
         ObjectMapper objectMapper = new ObjectMapper();
         
         try {
+            
             JsonNode rootNode = objectMapper.readTree(checkoutToken);
             
-            String embeddedJsonString = rootNode.path("value").asText();
-            JsonNode embeddedJsonNode = objectMapper.readTree(embeddedJsonString);
+            if (rootNode.has("value") && rootNode.isObject()) {
+                String embeddedJsonString = rootNode.path("value").asText();
+                rootNode = objectMapper.readTree(embeddedJsonString);
+            }
             
-            for (JsonNode productNode : embeddedJsonNode.path("products")) {
+            for (JsonNode productNode : rootNode.path("products")) {
                 JsonNode offerNode = productNode.path("offer");
                 if(offerNode.path("key").asText().equals(vo.getOfferCode())) {
                     for (JsonNode paymentMethodNode : offerNode.path("paymentMethods")) {
