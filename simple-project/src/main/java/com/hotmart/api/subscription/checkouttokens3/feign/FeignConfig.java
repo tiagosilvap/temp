@@ -3,6 +3,7 @@ package com.hotmart.api.subscription.checkouttokens3.feign;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.codec.Decoder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -24,9 +25,11 @@ public class FeignConfig {
             public Object decode(Response response, Type type) throws IOException {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(response.body().asInputStream()))) {
                     String responseBody = reader.lines().collect(Collectors.joining("\n"));
-
-                    // Lógica para lidar com múltiplas linhas NDJSON ou converter cada linha em um objeto
-                    return objectMapper.readValue(responseBody, objectMapper.constructType(type));
+                    if(StringUtils.isNotBlank(responseBody)) {
+                        // Lógica para lidar com múltiplas linhas NDJSON ou converter cada linha em um objeto
+                        return objectMapper.readValue(responseBody, objectMapper.constructType(type));
+                    }
+                    return null;
                 }
             }
         };
