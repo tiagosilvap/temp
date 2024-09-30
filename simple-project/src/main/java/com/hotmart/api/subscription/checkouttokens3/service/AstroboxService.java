@@ -5,9 +5,12 @@ import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxClient;
 import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxCheckoutLoadPayloadRequest;
 import com.hotmart.api.subscription.checkouttokens3.feign.AstroboxResponse;
 import com.hotmart.api.subscription.checkouttokens3.feign.TokenResponse;
+import com.hotmart.api.subscription.checkouttokens3.vo.TransactionVO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -37,10 +40,20 @@ public class AstroboxService {
     }
     
     public AstroboxResponse getCheckoutLoadExample() {
+        var details = new TransactionVO();
+        details.setCreationDate(LocalDateTime.of(2024, 7, 10, 0, 0));
+        return getCheckoutLoadExample("HP1973886884", details);
+    }
+    
+    public AstroboxResponse getCheckoutLoadExample(String transaction, TransactionVO details) {
         AstroboxCheckoutLoadPayloadRequest.Parameters parameters = new AstroboxCheckoutLoadPayloadRequest.Parameters();
-        parameters.setBeginDay("2024-07-10");
-        parameters.setEndDay("2024-07-10");
-        parameters.setTransactions(List.of("HP1973886884"));
+        
+        var beginDay = details.getCreationDate().plusDays(1);
+        var endDay = details.getCreationDate().minusDays(1);
+        
+        parameters.setBeginDay(beginDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        parameters.setEndDay(endDay.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        parameters.setTransactions(List.of(transaction));
         
         AstroboxCheckoutLoadPayloadRequest request = new AstroboxCheckoutLoadPayloadRequest();
         request.setQuery("38c8a557-4fee-4cc4-8b80-5aa7d7261c2f");

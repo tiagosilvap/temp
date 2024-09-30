@@ -4,6 +4,7 @@ import com.hotmart.payment.vo.hotpay.PaymentType;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 public class TransactionVO {
@@ -13,19 +14,25 @@ public class TransactionVO {
     private BigDecimal subscriptionValue;
     private BigDecimal transactionValue;
     private Long paymentId;
+    private LocalDateTime creationDate;
+    
+    public TransactionVO() {
+    }
     
     public TransactionVO(String offerCode,
                          String paymentType,
                          Integer installments,
                          BigDecimal subscriptionValue,
                          BigDecimal transactionValue,
-                         Long paymentId) {
+                         Long paymentId,
+                         LocalDateTime creationDate) {
         this.offerCode = offerCode;
         this.paymentType = paymentType;
         this.installments = installments;
         this.subscriptionValue = subscriptionValue;
         this.transactionValue = transactionValue;
         this.paymentId = paymentId;
+        this.creationDate = creationDate;
     }
     
     public String getPaymentType() {

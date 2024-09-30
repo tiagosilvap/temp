@@ -90,6 +90,13 @@ public class S3Service {
             transactions.forEach(t -> {
                 String checkoutToken = downloadFile(t);
                 var details = transactionRepositoryCustom.getDetailsByTransaction(t);
+                if(checkoutToken == null) {
+                    var response = astroboxService.getCheckoutLoadExample(t, details);
+                    if(response != null) {
+                        checkoutToken = response.getPayload();
+                    }
+                }
+                
                 BigDecimal loadValue = jsonReader.readerToken(checkoutToken, details);
                 
                 if(loadValue != null && isWithinTolerance(loadValue, details.getTransactionValue(), BigDecimal.valueOf(0.9))) {

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Repository
 public class TransactionRepositoryCustom {
@@ -23,7 +25,8 @@ public class TransactionRepositoryCustom {
                     "    t.installments as installments, " +
                     "    sp.value as subscriptionValue, " +
                     "    if(t.type = 'SHOPPING_CART', ti.price, t.value) as transactionValue, " +
-                    "    sp.id as paymentId " +
+                    "    sp.id as paymentId, " +
+                    "    t.creation_date as creationDate " +
                     "from transaction t " +
                     "join transaction_item ti on t.id = ti.transaction " +
                     "join subscription s on ti.subscription = s.id " +
@@ -44,13 +47,17 @@ public class TransactionRepositoryCustom {
             BigDecimal subscriptionValue = result[3] != null ? new BigDecimal(result[3].toString()) : null;
             BigDecimal transactionValue = result[4] != null ? new BigDecimal(result[4].toString()) : null;
             Long paymentId = result[5] != null ? Long.valueOf(result[5].toString()) : null;
+            LocalDateTime creationDate = result[6] != null
+                    ? LocalDateTime.parse(result[6].toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                    : null;
             return new TransactionVO(
                     offerCode,
                     paymentType,
                     installments,
                     subscriptionValue,
                     transactionValue,
-                    paymentId
+                    paymentId,
+                    creationDate
             );
         } catch (NoResultException ex) {
             return null;
