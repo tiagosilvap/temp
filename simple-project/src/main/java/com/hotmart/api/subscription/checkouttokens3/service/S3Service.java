@@ -92,7 +92,7 @@ public class S3Service {
                 var details = transactionRepositoryCustom.getDetailsByTransaction(t);
                 BigDecimal loadValue = jsonReader.readerToken(checkoutToken, details);
                 
-                if(loadValue != null && loadValue.compareTo(details.getTransactionValue()) == 0) {
+                if(loadValue != null && isWithinTolerance(loadValue, details.getTransactionValue(), BigDecimal.valueOf(0.1))) {
                     hotpayClient.updateValueSubscriptionPayment(
                             BEARER_TOKEN, details.getPaymentId(), details.getTransactionValue()
                     );
@@ -161,5 +161,13 @@ public class S3Service {
         }
         
         return false;
+    }
+    
+    private boolean isWithinTolerance(BigDecimal value1,
+                                     BigDecimal value2,
+                                     BigDecimal tolerance
+    ) {
+        BigDecimal difference = value1.subtract(value2).abs();
+        return difference.compareTo(tolerance) <= 0;
     }
 }

@@ -28,10 +28,15 @@ public class JsonReader {
                 if(offerNode.path("key").asText().equals(vo.getOfferCode())) {
                     for (JsonNode paymentMethodNode : offerNode.path("paymentMethods")) {
                         if (paymentMethodNode.path("type").asText().equals(vo.getPaymentType())) {
-                            for (JsonNode installmentNode : paymentMethodNode.path("installments")) {
-                                if (installmentNode.path("number").asInt() == vo.getInstallments()) {
-                                    fullAmountValue = BigDecimal.valueOf(installmentNode.path("fullAmount").path("value").asDouble());
-                                    System.out.println("Valor total para 4 parcelas no cartão de crédito: " + fullAmountValue);
+                            if(vo.getInstallments() == 1) {
+                                fullAmountValue = BigDecimal.valueOf(paymentMethodNode.path("amount").path("value").asDouble());
+                                System.out.println("### Total value: " + fullAmountValue);
+                            } else {
+                                for (JsonNode installmentNode : paymentMethodNode.path("installments")) {
+                                    if (installmentNode.path("number").asInt() == vo.getInstallments()) {
+                                        fullAmountValue = BigDecimal.valueOf(installmentNode.path("fullAmount").path("value").asDouble());
+                                        System.out.println("### Total value: " + fullAmountValue);
+                                    }
                                 }
                             }
                         }
