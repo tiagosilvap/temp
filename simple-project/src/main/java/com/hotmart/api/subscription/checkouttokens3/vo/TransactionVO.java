@@ -1,5 +1,6 @@
 package com.hotmart.api.subscription.checkouttokens3.vo;
 
+import com.hotmart.payment.vo.hotpay.PaymentType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -25,5 +26,12 @@ public class TransactionVO {
         this.subscriptionValue = subscriptionValue;
         this.transactionValue = transactionValue;
         this.paymentId = paymentId;
+    }
+    
+    public String getPaymentType() {
+        if(PaymentType.PAYPAL_INTERNACIONAL.getCode().equals(paymentType)) {
+            return PaymentType.PAYPAL.getCode();
+        }
+        return paymentType;
     }
 }
