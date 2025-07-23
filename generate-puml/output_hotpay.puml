@@ -1,0 +1,300 @@
+@startuml
+' Use o modo E-R
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <u>x</u>
+
+' Tabelas existentes
+
+table(transaction) {
+  primary_key(id)
+  type
+  creation_date
+  status
+  hotpay_reference
+  shopper_credit_card (FK)
+  gateway
+  gateway_reference
+  acquirer_reference
+  release_date
+  last_update
+  value
+  currency
+  client (FK)
+  installments
+  shopper_statement
+  is_micro_payment
+  acquirer_code
+  merchant_account
+  payment_type
+  shopper_ip
+  parent_transaction
+  transaction_version
+  finger_print
+  value_refunded
+}
+
+table(shopper) {
+  primary_key(id)
+  client (FK)
+  email
+  first_name
+  last_name
+  document
+  country
+  country_code
+  ucode
+}
+
+table(transaction_item) {
+  primary_key(id)
+  merchant_reference
+  description
+  product_name
+  price
+  payload
+  transaction (FK)
+  amount
+  subscription (FK)
+  recurrence_number
+  hotpay_reference
+  status
+  quantity_refunded
+  amount_refunded
+  shopper_statement
+  product_id
+  seller_ucode
+  product_type
+  zero_auth
+  smart_installment_payment
+  additional_data
+}
+
+table(subscription) {
+  primary_key(id)
+  first_transaction_item (FK)
+  creation_date
+  current_recurrency
+  date_last_recurrency
+  interval_between_charges
+  interval_type_between_charges
+  product_code
+  status
+  subscriber (FK)
+  max_charge_cicles
+  cancellation_date
+  parent_transaction
+  date_next_charge
+  due_day
+  days_to_start_subscription
+  default_payment_type
+  shopper_credit_card
+  activation_date
+  reference_date_charging_subscription
+  processing
+}
+
+table(best_cc_approval_date) {
+  primary_key(id)
+  date
+  week
+  currency
+  total_transactions
+  approved_transactions
+  creditcard_approval_unique_rate
+}
+
+table(recurrency_log) {
+  primary_key(id)
+  creation_date
+  message
+  recurrency_number
+  subscription (FK)
+  success
+  value
+}
+
+table(recurrency_manager) {
+  primary_key(id)
+  creation_date
+  subscription
+  recurrency_number
+  transaction_item (FK)
+  status
+}
+
+table(retry_recurrency) {
+  primary_key(id)
+  subscription
+  recurrency_number
+  creation_date
+  scheduled_date
+  source
+  status
+  retry_type
+  reason
+  error_code
+  transaction_source
+  processing
+  subscription_payment (FK)
+  transaction_target (FK)
+}
+
+table(subscription_payment) {
+  primary_key(id)
+  currency
+  end_recurrency
+  start_recurrency
+  value
+  subscription (FK)
+  number_installments
+  shopper_credit_card (FK)
+  payload
+  status
+}
+
+table(subscription_anticipation_info) {
+  primary_key(id)
+  subscription (FK)
+  transaction (FK)
+  months_added
+  date_next_charge
+  applied
+}
+
+table(subscription_extra_info) {
+  primary_key(id)
+  subscription (FK)
+  subscription_type
+}
+
+table(subscription_hist) {
+  primary_key(id)
+  change_date
+  change_type
+  subscription (FK)
+  current_recurrency
+  interval_between_charges
+  interval_type_between_charges
+  max_charge_cicles
+  date_next_charge
+}
+
+table(subscription_hist_switch_plan) {
+  primary_key(id)
+  subscription_hist (FK)
+  previous_due_day
+}
+
+table(subscription_log) {
+  primary_key(id)
+  subscription (FK)
+  event_date
+  log
+}
+
+table(subscription_pix_auto_info) {
+  primary_key(id)
+  enrollment_id
+  status
+  gateway
+  created_at
+  variable_value
+  max_amount_floor
+  subscription_id (FK)
+  shopper_id (FK)
+  hotpay_reference
+}
+
+table(subscription_recurring_detail_reference) {
+  primary_key(id)
+  subscription (FK)
+  token
+  creation_date
+  gateway
+  payment_type
+}
+
+table(transaction_subscription_extra_info) {
+    primary_key(id)
+    transaction_item (FK)
+    subscription_payment (FK)
+    retry_recurrence_origin (FK)
+    retry_recurrence_generate (FK)
+}
+
+table(transaction_item_recurrence_history) {
+    primary_key(id)
+    transaction_item (FK)
+    days_added
+    snapshot_date_next_charge
+    new_date_next_charge
+    snapshot_recurrence_number
+    new_recurrence_number
+    snapshot_max_charge_cycles
+    snapshot_due_day
+    date_next_charge_applied
+    retry
+    new_max_charge_cycles
+}
+
+'table(subscription_saas) {
+'  primary_key(id)
+'  hotpay_subscription_saas_reference
+'  transaction_item_reference (FK)
+'  current_subscription_shopper_credit_card (FK)
+'}
+'
+'table(subscription_shopper_credit_card) {
+'  primary_key(id)
+'  subscription (FK)
+'  shopper_credit_card (FK)
+'  subscription_saas (FK)
+'  gateway_recurrence_transaction_identifier
+'}
+'
+'table(subscription_saas_transaction_item) {
+'  primary_key(subscription_saas) (FK)
+'  transaction_item (FK)
+'  transaction_saas_code
+'}
+'
+'table(subscription_shopper_bank_account) {
+'  primary_key(id)
+'  subscription (FK)
+'  shopper_bank_account (FK)
+'  subscription_saas (FK)
+'}
+
+
+' Relacionamentos
+
+subscription ||--o{ recurrency_log
+transaction_item ||--o{ recurrency_manager
+subscription_payment ||--o{ retry_recurrency
+transaction ||--o{ retry_recurrency
+shopper ||--o{ subscription
+subscription ||--o{ subscription_anticipation_info
+transaction ||--o{ subscription_anticipation_info
+subscription ||--o{ subscription_extra_info
+subscription ||--o{ subscription_hist
+subscription_hist ||--o{ subscription_hist_switch_plan
+subscription ||--o{ subscription_log
+subscription ||--o{ subscription_payment
+shopper ||--o{ subscription_pix_auto_info
+subscription ||--o{ subscription_pix_auto_info
+subscription ||--o{ subscription_recurring_detail_reference
+subscription ||--o{ transaction_item
+transaction ||--o{ transaction_item
+transaction_item ||--o{ transaction_item_recurrence_history
+retry_recurrency ||--o{ transaction_subscription_extra_info
+subscription_payment ||--o{ transaction_subscription_extra_info
+transaction_item ||--o{ transaction_subscription_extra_info
+
+'transaction_item ||--o{ subscription_saas_transaction_item
+'transaction_item ||--o{ subscription_saas
+'subscription_saas ||--o{ subscription_saas_transaction_item
+'subscription_saas ||--o{ subscription_shopper_bank_account
+@enduml
+
+
+
