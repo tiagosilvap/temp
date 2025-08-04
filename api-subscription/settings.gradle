@@ -1,0 +1,4 @@
+rootProject.name = 'api-subscription'
+include 'application'
+include 'domain'
+include 'infrastructure'

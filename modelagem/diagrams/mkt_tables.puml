@@ -1,0 +1,452 @@
+@startuml
+!define table(x) class x << (T,#FFAAAA) >>
+!define primary_key(x) <u>x</u>
+
+table(subscription_anticipation) {
+  primary_key(id)
+  producer_id
+  proposal_name
+  creation_date
+  deleted
+  deletion_date
+  type
+}
+
+table(produto) {
+  primary_key(id)
+  permitir_paginas_dinamicas
+  nome
+  descricao
+  forma_distribuicao
+  tags
+  codigo
+  preco
+  comissao
+  data_criacao
+  tipo_afiliacao
+  publicado
+  excluido
+  informacoes
+  limite_copias
+  copias_limitadas
+  situacao
+  temperatura
+  data_medicao_temperatura
+  id_pagina_venda
+  subcategoria
+  id_categoria
+  id_vendedor
+}
+
+table(coupon) {
+  primary_key(id)
+  id_product
+  code
+  start_date
+  end_date
+  id_affiliation
+  discount
+  deleted
+  creation_date
+  last_update
+  timezone
+  type
+  reserve_fund
+  remaining_uses
+  product_quantity
+  category
+  additional_data
+}
+
+table(anticipation_coupon) {
+  primary_key(id)
+  subscription_anticipation_id
+  coupon_id
+  creation_date
+}
+
+table(coupon_email) {
+  primary_key(id)
+  email
+  coupon_id
+  creation_date
+  used
+  use_date
+  status
+}
+
+table(plano_assinatura) {
+  primary_key(id)
+  comissao_padrao
+  comissao_recorrente
+  descricao
+  maximo_de_ciclos_cobrados
+  nome
+  periodicidade_da_recorrencia_em_dias
+  periodo_trial
+  status
+  valor_plano
+  produto
+  switch_plan_enabled
+  recovery_enabled
+  monthly_plan_as_annual
+  recovery_plan
+}
+
+table(assinatura) {
+  primary_key(id)
+  codigo_assinante
+  data_adesao
+  maximo_de_ciclos_cobrados_no_momento_da_adesao
+  periodicidade_da_recorrencia_no_momento_da_adesao
+  status
+  ultimo_pagamento_realizado
+  valor_de_recorrencia_no_momento_da_adesao
+  assinante
+  plano_assinatura
+  data_cancelamento
+  nome_do_plano_no_momento_da_adesao
+  ultima_tentativa_cobranca
+  assinatura_status
+  id_hotpay_subscription
+  data_vencimento
+  is_vat_value_embedded
+  id_produto
+  tipo_assinatura
+  activation_date
+  reference_date_charging_subscription
+  has_change_plan
+  valor_de_recorrencia_atual
+  last_update
+  date_next_charge
+  future_value_recurrence
+  future_recurrence_start_new_value
+  plan_name
+  trial
+  seller_id
+  must_change_credit_card
+}
+
+table(oferta_produto) {
+  primary_key(id)
+  ativa
+  chave
+  preco
+  id_produto
+  oferta_principal
+  assinatura
+  prazo_em_dias_tentar_renovacao_oferta
+  url_pagina_renovacao
+  usa_pagina_externa
+  plano_assinatura
+  descricao
+  codigo_ativacao_oferta
+  desconto
+  quantidade_parcelas
+  valor_parcela
+  tipo_oferta
+  num_recorrencias
+  opcao_parcelamento
+  id_lot_serial
+  modo_pagamento
+  id_product_offer_next
+  suboffer
+  currency_code
+  creation_date
+  parent_offer
+  period_trial
+}
+
+table(coupon_offer) {
+  primary_key(id)
+  coupon_id
+  offer_id
+  creation_date
+  last_update
+  days_to_extend
+}
+
+table(recorrencia) {
+  primary_key(id)
+  compra_adesao
+  msg_transacao
+  num_recorrencia
+  trial
+  plano_assinatura
+  scheduled_date_retry
+}
+
+table(subscription_feature) {
+  primary_key(id)
+  subscription
+  subscription_feature_type
+}
+
+table(subscription_hist) {
+  primary_key(id)
+  change_date
+  change_type
+  subscription
+  subscription_plan
+  max_charge_cycles
+  periodicity
+  recurrence_number
+  offer
+}
+
+table(subscription_hist_switch_plan) {
+  primary_key(id)
+  subscription_hist
+  previous_subscription_plan
+  previous_value
+  previous_offer
+  price_per_day_calculated
+  days_interval_calculated
+  prorated_plan_value
+  unused_amount
+  is_prorated
+  new_plan_value
+  new_plan_currency
+  transaction
+}
+
+table(subscription_info) {
+  primary_key(id)
+  active
+  city
+  complement
+  country
+  creation_date
+  ddd
+  neighborhood
+  number
+  state
+  street
+  telephone
+  zipCode
+  subscription
+}
+
+table(subscription_plan_special_commission) {
+  primary_key(id)
+  recurring_commission
+  standard_commission
+  affiliation
+  subscription_plan
+}
+
+table(subscription_reactivation_request) {
+  primary_key(id)
+  subscription
+  request_date
+  reactivation_type
+  hash
+  status
+  accessed
+  confirmation_date
+  expiration_date
+  requester
+}
+
+table(switch_plan_connection) {
+  primary_key(id)
+  subscription_plan_from
+  subscription_plan_to
+  status
+  rollback
+  switch_plan_payment_type
+  offer_to
+}
+
+table(switch_plan_scheduled) {
+  primary_key(id)
+  offer
+  target_offer
+  auto_rollback
+  number_attempts_new_plan
+  status
+  type
+  installments_number
+}
+
+table(subscription_switch_plan_scheduled) {
+  primary_key(id)
+  subscription
+  switch_plan_scheduled
+  exchange_number_recurrence
+  status
+}
+
+table(subscription_switch_plan_scheduled_error) {
+  primary_key(id)
+  subscription_switch_plan_scheduled
+  cod_error
+  error_description
+}
+
+table(switch_plan_scheduled_refused_reason) {
+  primary_key(id)
+  switch_plan_scheduled
+  cod_refused_reason
+}
+
+table(switch_plan_scheduled_simple) {
+  primary_key(id)
+  recurrence_number_scheduled
+  effective_switch_plan
+}
+
+table(switch_plan_scheduled_with_refused) {
+  primary_key(id)
+  number_attempts
+  infinite_rollback_attempt
+}
+
+table(switch_plan_solicitation) {
+  primary_key(id)
+  id_subscription
+  request_date
+  status
+  id_selected_offer
+  accessed
+  hash
+  expiration_date
+  expired_by_producer
+  switch_plan_date
+  subscription_history_switch_plan_id
+  source_offer_id
+}
+
+table(switch_plan_solicitation_offer) {
+  primary_key(id)
+  id_switch_plan_solicitation
+  id_target_offer
+}
+
+table(compra) {
+  primary_key(id)
+  transacao
+  data_pedido
+  data_liberacao
+  status
+  valor_compra
+  observacao_cliente
+  engine_pagamento
+  afiliacao
+  item_estoque
+  comprador
+  tipo_pagamento
+  qtd_atualizacoes_sistema_pagamentos
+  tarifa_percentual_marketplace
+  tarifa_fixa_marketplace
+  data_alerta_vencimento_boleto
+  email_comissoes_enviado
+  email_comprador_enviado
+}
+
+table(item_produto) {
+  primary_key(id)
+  serial
+  informacoes
+  data_venda
+  data_cadastro
+  status
+  preco
+  id_produto
+  cadastro_membership
+  data_vencimento_garantia
+  comissao_original_produto
+  preco_original_produto
+  oferta_produto
+  data_envio_renovacao_oferta
+  email_renovacao_oferta_enviado
+  codigo_ativacao_oferta
+  id_serial
+  amount
+  id_order
+  assinatura
+}
+
+table(negotiate) {
+  primary_key(id)
+  purchase
+  subtotal
+  percent_discount
+  value_discount
+  total_value
+  installments_number
+  subscription
+  type
+}
+
+table(negotiate_recurrence) {
+  primary_key(id)
+  negotiate
+  recurrence
+}
+
+table(subscription_anticipation_purchase) {
+  primary_key(id)
+  purchase_id
+  days_added
+  snapshot_date_next_charge
+  new_date_next_charge
+  snapshot_recurrency_number
+  new_recurrency_number
+  snapshot_due_day
+  snapshot_max_charge_cycles
+  new_max_charge_cycles
+  date_next_charge_applied
+}
+
+' Relacionamentos
+usuario ||--o{ produto
+foto_produto ||--o{ produto
+produto ||--o{ coupon
+afiliacao ||--o{ coupon
+coupon ||--o{ anticipation_coupon
+subscription_anticipation ||--o{ anticipation_coupon
+coupon ||--o{ coupon_email
+produto ||--o{ plano_assinatura
+plano_assinatura ||--o{ assinatura
+usuario ||--o{ assinatura
+produto ||--o{ assinatura
+assinatura_produto ||--o{ oferta_produto
+plano_assinatura ||--o{ oferta_produto
+oferta_produto ||--o{ coupon_offer
+coupon ||--o{ coupon_offer
+plano_assinatura ||--o{ recorrencia
+assinatura ||--o{ subscription_feature
+assinatura ||--o{ subscription_hist
+plano_assinatura ||--o{ subscription_hist
+oferta_produto ||--o{ subscription_hist
+subscription_hist ||--o{ subscription_hist_switch_plan
+plano_assinatura ||--o{ subscription_hist_switch_plan
+oferta_produto ||--o{ subscription_hist_switch_plan
+assinatura ||--o{ subscription_info
+plano_assinatura ||--o{ subscription_plan_special_commission
+afiliacao ||--o{ subscription_plan_special_commission
+assinatura ||--o{ subscription_reactivation_request
+assinatura ||--o{ item_produto
+item_produto ||--o{ compra
+usuario ||--o{ subscription_reactivation_request
+plano_assinatura ||--o{ switch_plan_connection
+oferta_produto ||--o{ switch_plan_connection
+oferta_produto ||--o{ switch_plan_scheduled
+switch_plan_scheduled ||--o{ subscription_switch_plan_scheduled
+assinatura ||--o{ subscription_switch_plan_scheduled
+subscription_switch_plan_scheduled ||--o{ subscription_switch_plan_scheduled_error
+switch_plan_scheduled ||--o{ switch_plan_scheduled_refused_reason
+switch_plan_scheduled ||--o{ switch_plan_scheduled_simple
+switch_plan_scheduled ||--o{ switch_plan_scheduled_with_refused
+assinatura ||--o{ switch_plan_solicitation
+oferta_produto ||--o{ switch_plan_solicitation
+switch_plan_solicitation ||--o{ switch_plan_solicitation_offer
+oferta_produto ||--o{ switch_plan_solicitation_offer
+compra ||--o{ negotiate
+assinatura ||--o{ negotiate
+negotiate ||--o{ negotiate_recurrence
+recorrencia ||--o{ negotiate_recurrence
+compra ||--o{ subscription_anticipation_purchase
+
+@enduml
