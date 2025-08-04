@@ -3,10 +3,10 @@ import pymysql
 
 # Configurações
 host = "hotpay-db-read.vulcano.rocks"
-user = "tiago.pereira_read_NRGHu"
-password = "g4aXNn5Q-GWJ430lPQHy"
+user = "tiago.pereira_staginga_7VSpm"
+password = "zR-uHXDN5jt77NZPXlAf"
 database = "hotpay"
-output_file = "output.puml"
+output_file = "output_hotpay.puml"
 
 # Conexão
 engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}/{database}")
