@@ -17,11 +17,7 @@ db.recurring_payment.insertOne({
       offfer_id: 456
     }
   ],
-  shopper: {
-    shopper_id: ObjectId("64fb5a3e3d1a0f17d7e1a112"),
-    email: "alice@example.com",
-    country: "BR"
-  },
+  shopper: ObjectId("64ff0bd2a0e2d767d64b1991"),
   created_at: ISODate("2025-01-10T12:34:56Z"),
   status: "ACTIVE",
   updated_at: ISODate("2025-04-10T12:00:00Z"),

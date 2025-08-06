@@ -15,5 +15,5 @@ db.subscription_anticipation.insertOne({
   shopper_id: ObjectId("64fb5a3e3d1a0f17d7e1a112"),
   status: "INVITED",
   invited_at: ISODate("2025-03-15T12:00:00Z"),
-  expires_at: ISODate("2025-03-20T12:00:00Z"),
+  expires_at: ISODate("2025-03-20T12:00:00Z")
 });
