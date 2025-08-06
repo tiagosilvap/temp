@@ -1,4 +1,4 @@
-db.retry_recurrence.insertOne({
+db.retry_scheduler.insertOne({
   _id: ObjectId("64ffaaa111aaa111aaa60001"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
   payment_id: ObjectId("64ff0bd2a0e2d767d64b1232"),
@@ -10,7 +10,7 @@ db.retry_recurrence.insertOne({
   processing: false
 });
 
-db.retry_recurrence.insertOne({
+db.retry_scheduler.insertOne({
   _id: ObjectId("64ffaaa111aaa111aaa60002"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
   payment_id: ObjectId("64ff0bd2a0e2d767d64b1232"),
@@ -22,7 +22,7 @@ db.retry_recurrence.insertOne({
   processing: false
 });
 
-db.retry_recurrence.insertOne({
+db.retry_scheduler.insertOne({
   _id: ObjectId("64ffaaa111aaa111aaa60003"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
   payment_id: ObjectId("64ff0bd2a0e2d767d64b1233"),
@@ -34,7 +34,7 @@ db.retry_recurrence.insertOne({
   processing: false
 });
 
-db.retry_recurrence.insertOne({
+db.retry_scheduler.insertOne({
   _id: ObjectId("64ffaaa111aaa111aaa60004"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
   payment_id: ObjectId("64ff0bd2a0e2d767d64b1233"),
