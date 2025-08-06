@@ -90,7 +90,7 @@ db.payment.insertOne({
   negotiated_payments: {
     recurrences: [2,3],
     discount_percentage: 10,
-    type: "DEFAULT"
+    type: "DEFAULT",
     payment_id: [
       ObjectId("64ff0bd2a0e2d767d64b1232"), 
       ObjectId("64ff0bd2a0e2d767d64b1233")
