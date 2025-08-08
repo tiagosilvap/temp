@@ -1,4 +1,3 @@
-
 // user
 
 db.user.insertMany([
@@ -22,9 +21,6 @@ db.recurring_payment.insertMany([
     {
   _id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
   created_at: ISODate("2025-01-10T12:34:56Z"),
-  shopper_id: ObjectId("64ff0bd2a0e2d767d64b1991"),
-  seller_id: ObjectId("64ff0bd2a0e2d767d64b1992"),
-  plan_id: ObjectId("64ff0bd230e2d264d64b1998"),
   next_charge_at: ISODate("2025-05-10T12:00:00Z"),
   updated_at: ISODate("2025-03-20T12:00:00Z"),
   product_ucode: "dasda-9adbhas",
@@ -38,7 +34,16 @@ db.recurring_payment.insertMany([
   default_payment_type: "PIX_AUTOMATIC",
   type: "SUBSCRIPTION",
   processing: false,
+  shopper: {
+    _id: ObjectId("64ff0bd2a0e2d767d64b1991"),
+    ucode: "ucode-shopper"
+  },
+  seller: {
+    _id: ObjectId("64ff0bd2a0e2d767d64b1992"),
+    ucode: "ucode-seller"
+  },
   pix_auto_info: {
+    _id: ObjectId("64ff0bd2a0e2d767d2605891"),
     enrollment_id: "abc123",
     status: "ACTIVE",
     variable_value: true,
@@ -46,18 +51,20 @@ db.recurring_payment.insertMany([
   },
   billing_phases: [
     {
+      _id: ObjectId("64ff0bd2a0e2d767d2687620"),
       start_recurrence: 1,
       end_recurrence: 4,
       amount: 49.90,
-      installments: 1
+      installments: 1,
       currency: "BRL",
       offfer_id: 123,
       offer_key: "lgawns"
     },
     {
+      _id: ObjectId("64ff0bd2a0e2d767d26k8250"),
       start_recurrence: 5,
       amount: 80.00,
-      installments: 1
+      installments: 1,
       currency: "BRL",
       offfer_id: 456,
       offer_key: "lgawns"
@@ -76,7 +83,8 @@ db.recurring_payment.insertMany([
           amount: 40.00,
           installments: 1,
           currency: "BRL",
-          offer_key: "iqwysk"
+          offer_key: "iqwysk",
+          plan_name: "My Plan"
         },
         {
           status: "SCHEDULED",
@@ -84,7 +92,8 @@ db.recurring_payment.insertMany([
           amount: 40.00,
           installments: 1,
           currency: "BRL",
-          offer_key: "iqwysk"
+          offer_key: "iqwysk",
+          plan_name: "My Plan 2"
         }
       ]
     },
@@ -114,9 +123,12 @@ db.recurring_payment.insertMany([
 // payment
 
 db.payment.insertMany([
-    {
+{
   _id: ObjectId("64ff0bd2a0e2d767d64b1231"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
+  shopper_id: ObjectId("64ff0bd2a0e2d767d64b1991"),
+  seller_id: ObjectId("64ff0bd2a0e2d767d64b1992"),
+  product_ucode: "ucode-product",
   created_at: ISODate("2025-01-10T12:34:56Z"),
   hotpay_reference: "HP1",
   recurrence_number: 1,
@@ -127,11 +139,14 @@ db.payment.insertMany([
   type: "DEFAULT",
   payment_type: "PIX_AUTOMATIC",
   enrollment_id: "abc123",
-  offer_key: "gjsnsya"
+  offer_key: "gjsnsya",
+  is_recovery_smart_installment: false
 },
 {
   _id: ObjectId("64ff0bd2a0e2d767d64b1232"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
+  shopper_id: ObjectId("64ff0bd2a0e2d767d64b1991"),
+  seller_id: ObjectId("64ff0bd2a0e2d767d64b1992"),
   created_at: ISODate("2025-02-10T12:00:00Z"),
   hotpay_reference: "HP2",
   recurrence_number: 2,
@@ -163,6 +178,8 @@ db.payment.insertMany([
 {
   _id: ObjectId("64ff0bd2a0e2d767d64b1233"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
+  shopper_id: ObjectId("64ff0bd2a0e2d767d64b1991"),
+  seller_id: ObjectId("64ff0bd2a0e2d767d64b1992"),
   created_at: ISODate("2025-03-10T12:00:00Z"),
   hotpay_reference: "HP5",
   recurrence_number: 3,
@@ -194,6 +211,8 @@ db.payment.insertMany([
 {
   _id: ObjectId("64ff0bd2a0e2d767d64b1234"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
+  shopper_id: ObjectId("64ff0bd2a0e2d767d64b1991"),
+  seller_id: ObjectId("64ff0bd2a0e2d767d64b1992"),
   created_at: ISODate("2025-03-15T12:00:00Z"),
   hotpay_reference: "HP8",
   recurrence_number: 2,
@@ -213,6 +232,8 @@ db.payment.insertMany([
 {
   _id: ObjectId("64ff0bd2a0e2d767d64b1235"),
   recurring_payment_id: ObjectId("64fb5a3e3d1a0f17d7e1a111"),
+  shopper_id: ObjectId("64ff0bd2a0e2d767d64b1991"),
+  seller_id: ObjectId("64ff0bd2a0e2d767d64b1992"),
   created_at: ISODate("2025-03-20T12:00:00Z"),
   hotpay_reference: "HP9",
   recurrence_number: 5,
@@ -292,3 +313,126 @@ db.anticipation_campaign.insertMany([
   offer_key: "sukwool"
 }
 ]);
+
+
+/******************************************************************
+* ÍNDICES – modelagem agosto-2025
+* coleções: user · recurring_payment · payment · retry_scheduler · anticipation_campaign
+******************************************************************/
+
+
+/* --------------------------------------------------------------
+   1. user  (shopper / seller)
+----------------------------------------------------------------*/
+db.user.createIndex({ email: 1 }, { unique: true, name: "uk_user_email" });
+
+/* --------------------------------------------------------------
+   2. recurring_payment  (cabeçalho de assinatura)
+----------------------------------------------------------------*/
+db.recurring_payment.createIndex(
+  { seller_id: 1, status: 1, next_charge_at: 1, processing: 1 },
+  { name: "idx_seller_status_nextCharge" }
+);
+
+db.recurring_payment.createIndex(
+  { seller_id: 1, created_at: 1 },
+  { name: "idx_seller_createdAt" }
+);
+
+db.recurring_payment.createIndex(
+  { shopper_id: 1 },
+  { name: "idx_shopper_id" }
+);
+
+/* buscas por plano ou por código de produto */
+db.recurring_payment.createIndex(
+  { plan_id: 1 },
+  { name: "idx_plan_id" }
+);
+db.recurring_payment.createIndex(
+  { product_ucode: 1 },
+  { unique: true, sparse: true, name: "uk_product_ucode" }
+);
+
+/* --------------------------------------------------------------
+   3. payment  (faturas / cobranças)
+----------------------------------------------------------------*/
+db.payment.createIndex(
+  { seller_id: 1, status: 1, created_at: 1 },
+  { name: "idx_pay_seller_status_createdAt" }
+);
+
+db.payment.createIndex(
+  { recurring_payment_id: 1, recurrence_number: 1 },
+  { name: "idx_pay_sub_recurrence" }
+);
+
+/* contagem de recorrências pagas × cobradas */
+db.payment.createIndex(
+  { seller_id: 1, status: 1, recurrence_number: 1 },
+  { name: "idx_pay_seller_status_recurrence" }
+);
+
+/* consultas por shopper */
+db.payment.createIndex(
+  { shopper_id: 1, created_at: 1 },
+  { name: "idx_pay_shopper_createdAt" }
+);
+
+/* idempotência com gateway */
+db.payment.createIndex(
+  { hotpay_reference: 1 },
+  { unique: true, name: "uk_hotpay_reference" }
+);
+
+/* smart-installment recovery */
+db.payment.createIndex(
+  { recurring_payment_id: 1, is_recovery_smart_installment: 1 },
+  { name: "idx_pay_sub_recoverySI" }
+);
+
+/* --------------------------------------------------------------
+   4. retry_scheduler  (fila de retentativas)
+----------------------------------------------------------------*/
+db.retry_scheduler.createIndex(
+  { status: 1, scheduled_date: 1 },
+  { name: "idx_retry_status_schedDate" }
+);
+
+db.retry_scheduler.createIndex(
+  { payment_id: 1, retry_type: 1 },
+  { name:"idx_retry_payment_type" }   // sem `unique:true`
+);
+
+/* TTL: deleta itens processados após 7 dias */
+db.retry_scheduler.createIndex(
+  { scheduled_date: 1 },
+  {
+    name: "ttl_retry_processed7d",
+    expireAfterSeconds: 60 * 60 * 24 * 7,
+    partialFilterExpression: { status: "PROCESSED" }
+  }
+);
+
+/* --------------------------------------------------------------
+   5. anticipation_campaign  (campanhas de antecipação)
+----------------------------------------------------------------*/
+db.anticipation_campaign.createIndex(
+  { seller_id: 1, status: 1 },
+  { name: "idx_campaign_seller_status" }
+);
+
+db.anticipation_campaign.createIndex(
+  { expires_at: 1 },
+  { name: "ttl_campaign_expired", expireAfterSeconds: 0 }
+);
+
+db.anticipation_campaign.createIndex(
+  { offer_key: 1 },
+  { name: "idx_campaign_offerKey" }
+);
+
+/******************************************************************
+* FIM: índices criados.  Use `db.collection.getIndexes()` para revisar
+******************************************************************/
+

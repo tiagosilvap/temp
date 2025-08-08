@@ -40,58 +40,6 @@ create table produto
     subcategoria                                   bigint                       null,
     id_categoria                                   bigint                       null,
     id_vendedor                                    bigint                       null,
-    id_foto_capa                                   bigint                       null,
-    blueprint_rating                               double                       null,
-    permite_pagamento_direto_por_afiliados         bit                          null,
-    direitos_revenda_declarados                    bit                          null,
-    data_publicacao                                datetime                     null,
-    prazo_garantia                                 int                          null,
-    ip_usuario_publicou                            varchar(255)                 null,
-    aprovado_revisao                               bit                          null,
-    data_ultima_revisao                            datetime                     null,
-    pagina_pedido_recebido                         varchar(255)                 null,
-    pagina_download                                varchar(255)                 null,
-    id_membership                                  bigint                       null,
-    usa_pagina_vendas_externa                      bit                          null,
-    pagina_vendas_externa                          varchar(255)                 null,
-    email_suporte                                  varchar(255)                 null,
-    comissao_mensalidade                           decimal(19, 2)               null,
-    modo_pagamento                                 int                          null,
-    analytics_tracking_code                        varchar(255)                 null,
-    exibir_no_mercado                              bit                          null,
-    codigo_externo                                 varchar(255)                 null,
-    marketplace_gera_entrega_login_senha_comprador bit                          null,
-    temperatura_maxima_atingida                    decimal(19, 2)               null,
-    ultima_atualizacao                             datetime                     null,
-    data_inclusaobi                                datetime                     null,
-    serial_dinamico                                bit          default b'0'    null,
-    revisado                                       bit                          null,
-    hot_membership                                 bit                          null,
-    habilitado                                     bit          default b'1'    null,
-    duracao_cookie_afiliado                        int          default 60      null,
-    quantidade_parcelas                            int                          null,
-    valor_parcela                                  decimal(19, 2)               null,
-    first_cookie_count                             bit                          null,
-    tipo_cookie                                    int          default 0       null,
-    ucode                                          varchar(36)                  not null,
-    currency_code                                  char(3)      default 'BRL'   null,
-    review_rating                                  decimal(12, 8)               null,
-    permite_afiliacao_multiprodutor                bit          default b'1'    not null,
-    id_revisor                                     bigint                       null,
-    data_revisao                                   datetime                     null,
-    content_locale                                 varchar(255) default 'PT_BR' null,
-    allow_affiliation_bonus                        bit          default b'0'    not null,
-    target_country                                 varchar(100)                 null,
-    sms_refuse_order_enabled                       bit          default b'0'    not null,
-    thank_page_billet                              varchar(255)                 null,
-    payment_term                                   bigint                       null comment 'Prazo de integralização do produto',
-    recurring_with_installments                    bit          default b'0'    not null,
-    recurring_max_installments                     tinyint                      null,
-    has_physical_product                           bit          default b'0'    null,
-    person_type                                    int          default 0       not null,
-    coproduction_invoice_enabled                   tinyint(1)   default 0       null,
-    thank_page_under_analisys                      varchar(255)                 null,
-    affiliate_support_email                        varchar(255)                 null,
     constraint i_produto_ucode
         unique (ucode),
     constraint FK7gx0rnn3dp15845l7c5surlma
@@ -99,33 +47,9 @@ create table produto
     constraint FKED8DCEF936E75189
         foreign key (id_vendedor) references usuario (id),
     constraint FKED8DCEF95288F96A
-        foreign key (id_foto_capa) references foto_produto (id),
-    constraint FKED8DCEF95937DB12
-        foreign key (id_categoria) references categoria (id),
-    constraint FKED8DCEF96732AD16
-        foreign key (subcategoria) references subcategoria (id),
-    constraint FKED8DCEF9E84B6978
-        foreign key (id_membership) references membership (id),
-    constraint FK_revisor_usuario
-        foreign key (id_revisor) references usuario (id),
-    constraint FKED8DCEF91BF96E8A
-        foreign key (id_revisor) references usuario (id)
-)
+        foreign key (id_foto_capa) references foto_produto (id)
     charset = utf8mb4
     row_format = DYNAMIC;
-
-
-create table assinatura_produto
-(
-    id                         bigint auto_increment
-        primary key,
-    duracao_em_dias_assiantura int          null,
-    url_pagina_renovacao       varchar(255) null,
-    id_produto                 bigint       null,
-    constraint FK4DD14765BD6FF19E
-        foreign key (id_produto) references produto (id)
-)
-    charset = utf8mb4;
 
 
 create table coupon
@@ -326,24 +250,6 @@ create table oferta_produto
     creation_date                         datetime                null,
     parent_offer                          bigint                  null,
     period_trial                          int                     null,
-    disable_price_conversion              tinyint(1) default 0    null,
-    recovery_with_smart_installment       tinyint(1) default 0    null,
-    id_lot_serial_origin                  bigint                  null,
-    is_upgrade                            bit        default b'0' null,
-    maximo_parcelas_assinatura            int                     null,
-    force_smart_installment               bit        default b'0' not null,
-    installment_type                      varchar(45)             null,
-    installment_total_value               decimal(19, 2)          null,
-    installment_fee                       decimal(19, 2)          null,
-    installment_divisor                   decimal(19, 3)          null,
-    max_installments_recovery             tinyint(1)              null,
-    trial_value                           decimal(19, 2)          null,
-    trial_type                            varchar(255)            null,
-    installment_increased_value           decimal(19, 2)          null,
-    type_dynamic_offer                    tinyint(1)              null,
-    id_dynamic_offer                      bigint                  null,
-    reserve_fund                          varchar(60)             null,
-    buyer_installment_interest_rate       decimal(19, 12)         null,
     constraint chave
         unique (chave),
     constraint FKA79FA2EB55148749
@@ -410,157 +316,6 @@ create index fk_recorrencia_plano_assinatura_idx
 
 
 
-create table segmentation
-(
-    id          bigint auto_increment
-        primary key,
-    name        varchar(100)                       not null,
-    description varchar(255)                       null,
-    owner       bigint                             not null,
-    create_date datetime default CURRENT_TIMESTAMP not null,
-    last_update datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_from_user
-        foreign key (owner) references usuario (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_offer
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    offer        bigint                             not null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_offer_from_offer
-        foreign key (offer) references oferta_produto (id),
-    constraint fk_segmentation_offer_from_segmentation
-        foreign key (segmentation) references segmentation (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_plan
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    plan         bigint                             not null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_plan_from_plan
-        foreign key (plan) references plano_assinatura (id),
-    constraint fk_segmentation_plan_from_segmentation
-        foreign key (segmentation) references segmentation (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_product
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    product      bigint                             not null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_product_from_product
-        foreign key (product) references produto (id),
-    constraint fk_segmentation_product_from_segmentation
-        foreign key (segmentation) references segmentation (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_rule
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    rule         bigint                             not null,
-    name         varchar(100)                       not null,
-    description  varchar(255)                       null,
-    parameters   varchar(255)                       null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_rule_from_rule
-        foreign key (rule) references rule (id),
-    constraint fk_segmentation_rule_from_segmentation
-        foreign key (segmentation) references segmentation (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_seller
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    seller       bigint                             not null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_seller_from_segmentation
-        foreign key (segmentation) references segmentation (id),
-    constraint fk_segmentation_seller_from_seller
-        foreign key (seller) references usuario (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_subscriber
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    subscriber   bigint                             not null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_subscriber_from_segmentation
-        foreign key (segmentation) references segmentation (id),
-    constraint fk_segmentation_subscriber_from_subscriber
-        foreign key (subscriber) references usuario (id)
-)
-    charset = utf8mb4;
-
-create table segmentation_x_subscription
-(
-    id           bigint auto_increment
-        primary key,
-    segmentation bigint                             not null,
-    subscription bigint                             not null,
-    create_date  datetime default CURRENT_TIMESTAMP not null,
-    last_update  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP,
-    constraint fk_segmentation_subscription_from_segmentation
-        foreign key (segmentation) references segmentation (id),
-    constraint fk_segmentation_subscription_from_subscription
-        foreign key (subscription) references assinatura (id)
-)
-    charset = utf8mb4;
-
-
-create table subscription_credit_card_info
-(
-    id                  bigint auto_increment
-        primary key,
-    subscription        bigint       not null,
-    card_expiry_month   varchar(2)   not null,
-    card_expiry_year    varchar(4)   not null,
-    card_bin_code       varchar(10)  null,
-    card_number         varchar(255) not null,
-    card_holder_name    varchar(100) null,
-    variant             varchar(100) null,
-    notification_status varchar(100) null,
-    card_expiry_date    date         null,
-    constraint subscription_credit_card_info_assinatura_id_fk
-        unique (subscription),
-    constraint subscription_credit_card_info_assinatura_id_fk
-        foreign key (subscription) references assinatura (id)
-)
-    charset = utf8mb4;
-
-create index idx_subs_credit_card_info_card_expiry_date
-    on subscription_credit_card_info (card_expiry_date);
-
-create index idx_subs_credit_card_info_month_year_status
-    on subscription_credit_card_info (card_expiry_month, card_expiry_year, notification_status);
-
-create index idx_subs_credit_card_info_status
-    on subscription_credit_card_info (notification_status);
 
 create table subscription_feature
 (
@@ -908,50 +663,6 @@ create table compra
     data_alerta_vencimento_boleto              datetime              null,
     email_comissoes_enviado                    bit                   null,
     email_comprador_enviado                    bit                   null,
-    tarifa_engine_pagamento_calculada          decimal(19, 2)        null,
-    tarifa_fixa_cobrada_engine_pagamento       decimal(19, 2)        null,
-    tarifa_percentual_cobrada_engine_pagamento decimal(19, 2)        null,
-    chave                                      varchar(255)          null,
-    origem                                     varchar(255)          null,
-    data_envio_renovacao_oferta                datetime              null,
-    email_renovacao_oferta_enviado             bit                   null,
-    data_retentiva_venda                       datetime              null,
-    data_reenvio                               datetime              null,
-    version                                    int                   null,
-    afiliacao_por_indicacao_de_outro_produto   bit                   null,
-    codigo_externo                             varchar(255)          null,
-    retentativas_de_entrega                    int                   null,
-    metodo_pagamento                           int                   null,
-    numero_parcelas                            int                   null,
-    codigo_reimpressao_boleto                  varchar(1000)         null,
-    ultima_atualizacao                         datetime              null,
-    data_inclusaobi                            datetime              null,
-    log_info                                   longtext              null,
-    id_recorrencia                             bigint                null,
-    analise_instantanea                        bit                   null,
-    ip_comprador                               varchar(255)          null,
-    enviou_pagamento                           int                   null,
-    email_compra_cancelada_enviado             bit                   null,
-    url_download                               varchar(1000)         null,
-    origem_sck                                 varchar(255)          null,
-    checkout_mode                              int     default 0     null,
-    parcelamento_fixo                          bit     default b'0'  null,
-    valor_parcela                              decimal(19, 2)        null,
-    valor_total                                decimal(19, 2)        null,
-    identificacao_afiliacao                    int                   null,
-    id_widget_form                             bigint                null,
-    id_exchange_order                          bigint                null,
-    conversion_rate                            decimal(19, 12)       null,
-    currency_code_from                         char(3) default 'BRL' null,
-    currency_code_to                           char(3) default 'BRL' null,
-    is_payment_captured                        bit     default b'0'  null,
-    date_payment_captured                      datetime              null,
-    tem_afiliacoes_extras                      bit                   null,
-    warranty_refund                            int     default 30    not null,
-    billet_expiration_date                     datetime              null,
-    merchant_account                           varchar(50)           null,
-    date_chargeback                            datetime              null,
-    date_refund                                datetime              null,
     constraint chave
         unique (chave),
     constraint FKAF3F357E688C2F91
