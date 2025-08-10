@@ -1,8 +1,10 @@
 package com.subscription.domain.recurringpayment;
 
 import com.subscription.domain.AggregateRoot;
+import com.subscription.domain.payment.Payment;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
 
@@ -10,24 +12,56 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
     private Integer maxChargeCycle;
     private LocalDateTime createAt;
     private RecurringPaymentStatus status;
+    private Integer interval;
+    private IntervalType intervalType;
+    private LocalDateTime dateNextCharge;
+    private Payment firstPayment;
 
     private RecurringPayment(
             final RecurringPaymentID recurringPaymentID,
-            final Integer maxChargeCycle
-    ) {
+            final Integer maxChargeCycle,
+            Integer interval,
+            IntervalType intervalType,
+            Payment firstPayment) {
+
         super(recurringPaymentID);
         this.currentRecurrence = 1;
         this.maxChargeCycle = maxChargeCycle;
         this.createAt = LocalDateTime.now();
         this.status = RecurringPaymentStatus.INITIAL;
+        this.interval = interval;
+        this.intervalType = intervalType;
+        this.firstPayment = firstPayment;
+        this.dateNextCharge = defineNextCharge(this.createAt, this.interval, this.intervalType);
+    }
+
+    private LocalDateTime defineNextCharge(
+            LocalDateTime createAt,
+            Integer interval,
+            IntervalType intervalType
+    ) {
+        switch (intervalType) {
+            case MONTH:
+                return createAt.plusMonths(interval).with(LocalTime.NOON);
+            case WEEK:
+                return createAt.plusWeeks(interval).with(LocalTime.NOON);
+            default:
+                throw new IllegalArgumentException("Interval type is not supported: " + intervalType);
+        }
     }
 
     public static RecurringPayment newRecurringPayment(
-            Integer maxChargeCycle
+            Integer maxChargeCycle,
+            Integer interval,
+            IntervalType intervalType,
+            Payment firstPayment
     ) {
         return new RecurringPayment(
                 RecurringPaymentID.unique(),
-                maxChargeCycle
+                maxChargeCycle,
+                interval,
+                intervalType,
+                firstPayment
         );
     }
 
@@ -45,5 +79,21 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
 
     public RecurringPaymentStatus getStatus() {
         return status;
+    }
+
+    public Integer getInterval() {
+        return interval;
+    }
+
+    public IntervalType getIntervalType() {
+        return intervalType;
+    }
+
+    public LocalDateTime getDateNextCharge() {
+        return dateNextCharge;
+    }
+
+    public Payment getFirstPayment() {
+        return firstPayment;
     }
 }
