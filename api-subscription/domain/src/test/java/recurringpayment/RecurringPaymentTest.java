@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class RecurringPaymentTest {
 
     @Test
@@ -33,18 +36,18 @@ public class RecurringPaymentTest {
         Assertions.assertNotNull(recurringPayment);
         Assertions.assertNotNull(recurringPayment.getId());
         Assertions.assertNotNull(recurringPayment.getCurrentRecurrence());
-        Assertions.assertEquals(1, recurringPayment.getCurrentRecurrence());
-        Assertions.assertEquals(maxChargeCycle, recurringPayment.getMaxChargeCycle());
+        assertEquals(1, recurringPayment.getCurrentRecurrence());
+        assertEquals(maxChargeCycle, recurringPayment.getMaxChargeCycle());
         Assertions.assertNotNull(recurringPayment.getCreateAt());
-        Assertions.assertEquals(status, recurringPayment.getStatus());
-        Assertions.assertEquals(intervalType, recurringPayment.getIntervalType());
-        Assertions.assertEquals(interval, recurringPayment.getInterval());
+        assertEquals(status, recurringPayment.getStatus());
+        assertEquals(intervalType, recurringPayment.getIntervalType());
+        assertEquals(interval, recurringPayment.getInterval());
         Assertions.assertNotNull(recurringPayment.getFirstPayment());
         Assertions.assertNotNull(recurringPayment.getFirstPayment().getId());
-        Assertions.assertEquals(firstPayment, recurringPayment.getFirstPayment());
-        Assertions.assertEquals(type, recurringPayment.getType());
+        assertEquals(firstPayment, recurringPayment.getFirstPayment());
+        assertEquals(type, recurringPayment.getType());
         Assertions.assertNotNull(recurringPayment.getPlan());
-        Assertions.assertEquals(plan, recurringPayment.getPlan());
+        assertEquals(plan, recurringPayment.getPlan());
     }
 
     @Test
@@ -64,7 +67,7 @@ public class RecurringPaymentTest {
         );
 
         Assertions.assertNotNull(dateNextCharge);
-        Assertions.assertEquals(dateNextCharge, recurringPayment.getDateNextCharge());
+        assertEquals(dateNextCharge, recurringPayment.getDateNextCharge());
     }
 
     @Test
@@ -84,7 +87,7 @@ public class RecurringPaymentTest {
         );
 
         Assertions.assertNotNull(dateNextCharge);
-        Assertions.assertEquals(dateNextCharge, recurringPayment.getDateNextCharge());
+        assertEquals(dateNextCharge, recurringPayment.getDateNextCharge());
     }
 
     @Test
@@ -104,7 +107,25 @@ public class RecurringPaymentTest {
         );
 
         Assertions.assertNotNull(dateNextCharge);
-        Assertions.assertEquals(dateNextCharge, recurringPayment.getDateNextCharge());
+        assertEquals(dateNextCharge, recurringPayment.getDateNextCharge());
+    }
+
+    @Test
+    public void givenNullParam_whenCallUpdateDateNextCharge_thenThrowNullPointerException() {
+
+        final var recurringPayment = RecurringPayment.newRecurringPayment(
+                10,
+                1,
+                IntervalType.MONTH,
+                createPayment(),
+                RecurringPaymentType.SUBSCRIPTION,
+                Plan.newPlan()
+        );
+
+        assertThrows(
+                NullPointerException.class,
+                () -> recurringPayment.updateDateNextCharge(null)
+        );
     }
 
     private Payment createPayment() {

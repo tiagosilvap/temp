@@ -5,6 +5,7 @@ import com.subscription.domain.payment.Payment;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
 
@@ -39,6 +40,10 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
         this.dateNextCharge = defineNextCharge(this.createAt, this.interval, this.intervalType);
         this.type = type;
         this.plan = plan;
+    }
+
+    public void updateDateNextCharge(LocalDateTime newDateNextCharge) {
+        this.dateNextCharge = Objects.requireNonNull(newDateNextCharge);
     }
 
     private LocalDateTime defineNextCharge(
