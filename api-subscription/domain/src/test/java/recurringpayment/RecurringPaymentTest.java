@@ -1,9 +1,7 @@
 package recurringpayment;
 
 import com.subscription.domain.payment.Payment;
-import com.subscription.domain.recurringpayment.IntervalType;
-import com.subscription.domain.recurringpayment.RecurringPayment;
-import com.subscription.domain.recurringpayment.RecurringPaymentStatus;
+import com.subscription.domain.recurringpayment.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,9 +18,16 @@ public class RecurringPaymentTest {
         final var interval = 1;
         final var intervalType = IntervalType.MONTH;
         final var firstPayment = Payment.newPayment();
+        final var type = RecurringPaymentType.SUBSCRIPTION;
+        final var plan = Plan.newPlan();
 
         final var recurringPayment = RecurringPayment.newRecurringPayment(
-                maxChargeCycle, interval, intervalType, firstPayment
+                maxChargeCycle,
+                interval,
+                intervalType,
+                firstPayment,
+                type,
+                plan
         );
 
         Assertions.assertNotNull(recurringPayment);
@@ -36,7 +41,10 @@ public class RecurringPaymentTest {
         Assertions.assertEquals(interval, recurringPayment.getInterval());
         Assertions.assertNotNull(recurringPayment.getFirstPayment());
         Assertions.assertNotNull(recurringPayment.getFirstPayment().getId());
-
+        Assertions.assertEquals(firstPayment, recurringPayment.getFirstPayment());
+        Assertions.assertEquals(type, recurringPayment.getType());
+        Assertions.assertNotNull(recurringPayment.getPlan());
+        Assertions.assertEquals(plan, recurringPayment.getPlan());
     }
 
     @Test
@@ -44,11 +52,15 @@ public class RecurringPaymentTest {
 
         final var maxChargeCycle = 10;
         final var interval = 1;
-        final var intervalType = IntervalType.WEEK;
         final var dateNextCharge = LocalDateTime.now().plusWeeks(interval).with(LocalTime.NOON);
 
         final var recurringPayment = RecurringPayment.newRecurringPayment(
-                maxChargeCycle, interval, intervalType, createPayment()
+                maxChargeCycle,
+                interval,
+                IntervalType.WEEK,
+                Payment.newPayment(),
+                RecurringPaymentType.SUBSCRIPTION,
+                Plan.newPlan()
         );
 
         Assertions.assertNotNull(dateNextCharge);
@@ -60,11 +72,15 @@ public class RecurringPaymentTest {
 
         final var maxChargeCycle = 10;
         final var interval = 1;
-        final var intervalType = IntervalType.MONTH;
         final var dateNextCharge = LocalDateTime.now().plusMonths(interval).with(LocalTime.NOON);
 
         final var recurringPayment = RecurringPayment.newRecurringPayment(
-                maxChargeCycle, interval, intervalType, createPayment()
+                maxChargeCycle,
+                interval,
+                IntervalType.MONTH,
+                createPayment(),
+                RecurringPaymentType.SUBSCRIPTION,
+                Plan.newPlan()
         );
 
         Assertions.assertNotNull(dateNextCharge);
@@ -76,11 +92,15 @@ public class RecurringPaymentTest {
 
         final var maxChargeCycle = 10;
         final var interval = 12;
-        final var intervalType = IntervalType.MONTH;
         final var dateNextCharge = LocalDateTime.now().plusMonths(interval).with(LocalTime.NOON);
 
         final var recurringPayment = RecurringPayment.newRecurringPayment(
-                maxChargeCycle, interval, intervalType, createPayment()
+                maxChargeCycle,
+                interval,
+                IntervalType.MONTH,
+                createPayment(),
+                RecurringPaymentType.SUBSCRIPTION,
+                Plan.newPlan()
         );
 
         Assertions.assertNotNull(dateNextCharge);

@@ -16,13 +16,17 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
     private IntervalType intervalType;
     private LocalDateTime dateNextCharge;
     private Payment firstPayment;
+    private RecurringPaymentType type;
+    private Plan plan;
 
     private RecurringPayment(
             final RecurringPaymentID recurringPaymentID,
             final Integer maxChargeCycle,
             Integer interval,
             IntervalType intervalType,
-            Payment firstPayment) {
+            Payment firstPayment,
+            RecurringPaymentType type,
+            Plan plan) {
 
         super(recurringPaymentID);
         this.currentRecurrence = 1;
@@ -33,6 +37,8 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
         this.intervalType = intervalType;
         this.firstPayment = firstPayment;
         this.dateNextCharge = defineNextCharge(this.createAt, this.interval, this.intervalType);
+        this.type = type;
+        this.plan = plan;
     }
 
     private LocalDateTime defineNextCharge(
@@ -54,14 +60,18 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
             Integer maxChargeCycle,
             Integer interval,
             IntervalType intervalType,
-            Payment firstPayment
+            Payment firstPayment,
+            RecurringPaymentType type,
+            Plan plan
     ) {
         return new RecurringPayment(
                 RecurringPaymentID.unique(),
                 maxChargeCycle,
                 interval,
                 intervalType,
-                firstPayment
+                firstPayment,
+                type,
+                plan
         );
     }
 
@@ -95,5 +105,13 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
 
     public Payment getFirstPayment() {
         return firstPayment;
+    }
+
+    public RecurringPaymentType getType() {
+        return type;
+    }
+
+    public Plan getPlan() {
+        return plan;
     }
 }
