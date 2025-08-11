@@ -2,6 +2,7 @@ package com.subscription.domain.recurringpayment;
 
 import com.subscription.domain.AggregateRoot;
 import com.subscription.domain.payment.Payment;
+import com.subscription.domain.validation.ValidationHandler;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,16 +35,17 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
         this.maxChargeCycle = maxChargeCycle;
         this.createAt = LocalDateTime.now();
         this.status = RecurringPaymentStatus.INITIAL;
-        this.interval = interval;
-        this.intervalType = intervalType;
-        this.firstPayment = firstPayment;
+        this.interval = Objects.requireNonNull(interval, "'interval' should not be null");
+        this.intervalType = Objects.requireNonNull(intervalType, "'intervalType' should not be null");
+        this.firstPayment = Objects.requireNonNull(firstPayment, "'firstPayment' should not be null");
         this.dateNextCharge = defineNextCharge(this.createAt, this.interval, this.intervalType);
         this.type = type;
         this.plan = plan;
     }
 
     public void updateDateNextCharge(LocalDateTime newDateNextCharge) {
-        this.dateNextCharge = Objects.requireNonNull(newDateNextCharge);
+        this.dateNextCharge =
+                Objects.requireNonNull(newDateNextCharge, "'newDateNextCharge' should not be null'");
     }
 
     private LocalDateTime defineNextCharge(
@@ -78,6 +80,11 @@ public class RecurringPayment extends AggregateRoot<RecurringPaymentID> {
                 type,
                 plan
         );
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
+        new RecurringPaymentValidator(this, handler).validate();
     }
 
     public Integer getCurrentRecurrence() {

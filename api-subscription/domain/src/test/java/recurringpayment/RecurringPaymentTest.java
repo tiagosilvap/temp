@@ -1,7 +1,10 @@
 package recurringpayment;
 
+import com.subscription.domain.exceptions.DomainException;
 import com.subscription.domain.payment.Payment;
 import com.subscription.domain.recurringpayment.*;
+import com.subscription.domain.validation.Error;
+import com.subscription.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -122,10 +125,35 @@ public class RecurringPaymentTest {
                 Plan.newPlan()
         );
 
-        assertThrows(
+        NullPointerException ex = assertThrows(
                 NullPointerException.class,
                 () -> recurringPayment.updateDateNextCharge(null)
         );
+
+        Assertions.assertEquals("'newDateNextCharge' should not be null'", ex.getMessage());
+    }
+
+    @Test
+    public void givenNullPlan_whenCallValidate_thenThrowDomainException() {
+
+        var expectedErrorMessage = new Error("'plan' should not be null");
+
+        final var recurringPayment = RecurringPayment.newRecurringPayment(
+                10,
+                1,
+                IntervalType.MONTH,
+                createPayment(),
+                RecurringPaymentType.SUBSCRIPTION,
+                null
+        );
+
+        DomainException ex = assertThrows(
+                DomainException.class,
+                () -> recurringPayment.validate(new ThrowsValidationHandler())
+        );
+
+        Assertions.assertEquals(expectedErrorMessage.message(), ex.getMessage());
+        Assertions.assertEquals(expectedErrorMessage, ex.getError());
     }
 
     private Payment createPayment() {
