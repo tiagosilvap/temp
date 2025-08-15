@@ -31,6 +31,7 @@ db.recurring_payment.insertMany([
   max_charge_cycles: 12,
   last_approved_recurrence: 2,
   current_recurrence: 3,
+  trialType: 'FREE',
   default_payment_type: "PIX_AUTOMATIC",
   type: "SUBSCRIPTION",
   processing: false,
