@@ -18,7 +18,7 @@ public class IdempotencyKeyEntity {
     @Column(nullable = false, length = 16)
     private String status; // IN_PROGRESS or COMPLETED
 
-    @Lob
+    @Column(name = "response_payload", columnDefinition = "text")
     private String responsePayload;
 
     @Column(name="response_status")
