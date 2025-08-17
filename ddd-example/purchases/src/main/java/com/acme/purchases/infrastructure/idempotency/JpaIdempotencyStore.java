@@ -20,7 +20,7 @@ public class JpaIdempotencyStore implements IdempotencyStore {
     @Transactional(readOnly = true)
     public Optional<StoredResponse> findCompleted(String key) {
         return jpa.findByIdempotencyKey(key).filter(e -> "COMPLETED".equals(e.getStatus()))
-                .map(e -> new StoredResponse(e.getResponsePayload(), e.getResponseStatus() == null ? 200 : e.getResponseStatus()));
+                .map(e -> new StoredResponse(e.getResponsePayload(), e.getResponseStatus() == null ? 201 : e.getResponseStatus()));
     }
 
     @Override
