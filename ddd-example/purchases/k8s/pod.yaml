@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "my-app"
+  labels:
+    app: "my-app"
+spec:
+  containers:
+    - name: my-app
+      image: "tiagosp13/app-spring-boot:latest"
